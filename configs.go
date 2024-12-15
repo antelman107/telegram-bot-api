@@ -264,7 +264,9 @@ func (CloseConfig) params() (Params, error) {
 
 // BaseChat is base type for all chat config types.
 type BaseChat struct {
-	ChatID                   int64 // required
+	ChatID int64 // required
+	// ThreadMessageID is an optional thread identifier
+	ThreadMessageID          int
 	ChannelUsername          string
 	ProtectContent           bool
 	ReplyToMessageID         int
@@ -278,6 +280,7 @@ func (chat *BaseChat) params() (Params, error) {
 
 	params.AddFirstValid("chat_id", chat.ChatID, chat.ChannelUsername)
 	params.AddNonZero("reply_to_message_id", chat.ReplyToMessageID)
+	params.AddNonZero("thread_message_id", chat.ThreadMessageID)
 	params.AddBool("disable_notification", chat.DisableNotification)
 	params.AddBool("allow_sending_without_reply", chat.AllowSendingWithoutReply)
 	params.AddBool("protect_content", chat.ProtectContent)
@@ -429,16 +432,20 @@ func (config PhotoConfig) method() string {
 }
 
 func (config PhotoConfig) files() []RequestFile {
-	files := []RequestFile{{
-		Name: "photo",
-		Data: config.File,
-	}}
+	files := []RequestFile{
+		{
+			Name: "photo",
+			Data: config.File,
+		},
+	}
 
 	if config.Thumb != nil {
-		files = append(files, RequestFile{
-			Name: "thumb",
-			Data: config.Thumb,
-		})
+		files = append(
+			files, RequestFile{
+				Name: "thumb",
+				Data: config.Thumb,
+			},
+		)
 	}
 
 	return files
@@ -477,16 +484,20 @@ func (config AudioConfig) method() string {
 }
 
 func (config AudioConfig) files() []RequestFile {
-	files := []RequestFile{{
-		Name: "audio",
-		Data: config.File,
-	}}
+	files := []RequestFile{
+		{
+			Name: "audio",
+			Data: config.File,
+		},
+	}
 
 	if config.Thumb != nil {
-		files = append(files, RequestFile{
-			Name: "thumb",
-			Data: config.Thumb,
-		})
+		files = append(
+			files, RequestFile{
+				Name: "thumb",
+				Data: config.Thumb,
+			},
+		)
 	}
 
 	return files
@@ -517,16 +528,20 @@ func (config DocumentConfig) method() string {
 }
 
 func (config DocumentConfig) files() []RequestFile {
-	files := []RequestFile{{
-		Name: "document",
-		Data: config.File,
-	}}
+	files := []RequestFile{
+		{
+			Name: "document",
+			Data: config.File,
+		},
+	}
 
 	if config.Thumb != nil {
-		files = append(files, RequestFile{
-			Name: "thumb",
-			Data: config.Thumb,
-		})
+		files = append(
+			files, RequestFile{
+				Name: "thumb",
+				Data: config.Thumb,
+			},
+		)
 	}
 
 	return files
@@ -546,10 +561,12 @@ func (config StickerConfig) method() string {
 }
 
 func (config StickerConfig) files() []RequestFile {
-	return []RequestFile{{
-		Name: "sticker",
-		Data: config.File,
-	}}
+	return []RequestFile{
+		{
+			Name: "sticker",
+			Data: config.File,
+		},
+	}
 }
 
 // VideoConfig contains information about a SendVideo request.
@@ -583,16 +600,20 @@ func (config VideoConfig) method() string {
 }
 
 func (config VideoConfig) files() []RequestFile {
-	files := []RequestFile{{
-		Name: "video",
-		Data: config.File,
-	}}
+	files := []RequestFile{
+		{
+			Name: "video",
+			Data: config.File,
+		},
+	}
 
 	if config.Thumb != nil {
-		files = append(files, RequestFile{
-			Name: "thumb",
-			Data: config.Thumb,
-		})
+		files = append(
+			files, RequestFile{
+				Name: "thumb",
+				Data: config.Thumb,
+			},
+		)
 	}
 
 	return files
@@ -627,16 +648,20 @@ func (config AnimationConfig) method() string {
 }
 
 func (config AnimationConfig) files() []RequestFile {
-	files := []RequestFile{{
-		Name: "animation",
-		Data: config.File,
-	}}
+	files := []RequestFile{
+		{
+			Name: "animation",
+			Data: config.File,
+		},
+	}
 
 	if config.Thumb != nil {
-		files = append(files, RequestFile{
-			Name: "thumb",
-			Data: config.Thumb,
-		})
+		files = append(
+			files, RequestFile{
+				Name: "thumb",
+				Data: config.Thumb,
+			},
+		)
 	}
 
 	return files
@@ -664,16 +689,20 @@ func (config VideoNoteConfig) method() string {
 }
 
 func (config VideoNoteConfig) files() []RequestFile {
-	files := []RequestFile{{
-		Name: "video_note",
-		Data: config.File,
-	}}
+	files := []RequestFile{
+		{
+			Name: "video_note",
+			Data: config.File,
+		},
+	}
 
 	if config.Thumb != nil {
-		files = append(files, RequestFile{
-			Name: "thumb",
-			Data: config.Thumb,
-		})
+		files = append(
+			files, RequestFile{
+				Name: "thumb",
+				Data: config.Thumb,
+			},
+		)
 	}
 
 	return files
@@ -708,16 +737,20 @@ func (config VoiceConfig) method() string {
 }
 
 func (config VoiceConfig) files() []RequestFile {
-	files := []RequestFile{{
-		Name: "voice",
-		Data: config.File,
-	}}
+	files := []RequestFile{
+		{
+			Name: "voice",
+			Data: config.File,
+		},
+	}
 
 	if config.Thumb != nil {
-		files = append(files, RequestFile{
-			Name: "thumb",
-			Data: config.Thumb,
-		})
+		files = append(
+			files, RequestFile{
+				Name: "thumb",
+				Data: config.Thumb,
+			},
+		)
 	}
 
 	return files
@@ -1187,10 +1220,12 @@ func (config WebhookConfig) params() (Params, error) {
 
 func (config WebhookConfig) files() []RequestFile {
 	if config.Certificate != nil {
-		return []RequestFile{{
-			Name: "certificate",
-			Data: config.Certificate,
-		}}
+		return []RequestFile{
+			{
+				Name: "certificate",
+				Data: config.Certificate,
+			},
+		}
 	}
 
 	return nil
@@ -1312,7 +1347,9 @@ func (config UnbanChatMemberConfig) method() string {
 func (config UnbanChatMemberConfig) params() (Params, error) {
 	params := make(Params)
 
-	params.AddFirstValid("chat_id", config.ChatID, config.SuperGroupUsername, config.ChannelUsername)
+	params.AddFirstValid(
+		"chat_id", config.ChatID, config.SuperGroupUsername, config.ChannelUsername,
+	)
 	params.AddNonZero64("user_id", config.UserID)
 	params.AddBool("only_if_banned", config.OnlyIfBanned)
 
@@ -1360,7 +1397,9 @@ func (config RestrictChatMemberConfig) method() string {
 func (config RestrictChatMemberConfig) params() (Params, error) {
 	params := make(Params)
 
-	params.AddFirstValid("chat_id", config.ChatID, config.SuperGroupUsername, config.ChannelUsername)
+	params.AddFirstValid(
+		"chat_id", config.ChatID, config.SuperGroupUsername, config.ChannelUsername,
+	)
 	params.AddNonZero64("user_id", config.UserID)
 
 	err := params.AddInterface("permissions", config.Permissions)
@@ -1392,7 +1431,9 @@ func (config PromoteChatMemberConfig) method() string {
 func (config PromoteChatMemberConfig) params() (Params, error) {
 	params := make(Params)
 
-	params.AddFirstValid("chat_id", config.ChatID, config.SuperGroupUsername, config.ChannelUsername)
+	params.AddFirstValid(
+		"chat_id", config.ChatID, config.SuperGroupUsername, config.ChannelUsername,
+	)
 	params.AddNonZero64("user_id", config.UserID)
 
 	params.AddBool("is_anonymous", config.IsAnonymous)
@@ -1424,7 +1465,9 @@ func (SetChatAdministratorCustomTitle) method() string {
 func (config SetChatAdministratorCustomTitle) params() (Params, error) {
 	params := make(Params)
 
-	params.AddFirstValid("chat_id", config.ChatID, config.SuperGroupUsername, config.ChannelUsername)
+	params.AddFirstValid(
+		"chat_id", config.ChatID, config.SuperGroupUsername, config.ChannelUsername,
+	)
 	params.AddNonZero64("user_id", config.UserID)
 	params.AddNonEmpty("custom_title", config.CustomTitle)
 
@@ -1921,10 +1964,12 @@ func (config SetChatPhotoConfig) method() string {
 }
 
 func (config SetChatPhotoConfig) files() []RequestFile {
-	return []RequestFile{{
-		Name: "photo",
-		Data: config.File,
-	}}
+	return []RequestFile{
+		{
+			Name: "photo",
+			Data: config.File,
+		},
+	}
 }
 
 // DeleteChatPhotoConfig allows you to delete a group, supergroup, or channel's photo.
@@ -2023,10 +2068,12 @@ func (config UploadStickerConfig) params() (Params, error) {
 }
 
 func (config UploadStickerConfig) files() []RequestFile {
-	return []RequestFile{{
-		Name: "png_sticker",
-		Data: config.PNGSticker,
-	}}
+	return []RequestFile{
+		{
+			Name: "png_sticker",
+			Data: config.PNGSticker,
+		},
+	}
 }
 
 // NewStickerSetConfig allows creating a new sticker set.
@@ -2065,16 +2112,20 @@ func (config NewStickerSetConfig) params() (Params, error) {
 
 func (config NewStickerSetConfig) files() []RequestFile {
 	if config.PNGSticker != nil {
-		return []RequestFile{{
-			Name: "png_sticker",
-			Data: config.PNGSticker,
-		}}
+		return []RequestFile{
+			{
+				Name: "png_sticker",
+				Data: config.PNGSticker,
+			},
+		}
 	}
 
-	return []RequestFile{{
-		Name: "tgs_sticker",
-		Data: config.TGSSticker,
-	}}
+	return []RequestFile{
+		{
+			Name: "tgs_sticker",
+			Data: config.TGSSticker,
+		},
+	}
 }
 
 // AddStickerConfig allows you to add a sticker to a set.
@@ -2105,16 +2156,20 @@ func (config AddStickerConfig) params() (Params, error) {
 
 func (config AddStickerConfig) files() []RequestFile {
 	if config.PNGSticker != nil {
-		return []RequestFile{{
-			Name: "png_sticker",
-			Data: config.PNGSticker,
-		}}
+		return []RequestFile{
+			{
+				Name: "png_sticker",
+				Data: config.PNGSticker,
+			},
+		}
 	}
 
-	return []RequestFile{{
-		Name: "tgs_sticker",
-		Data: config.TGSSticker,
-	}}
+	return []RequestFile{
+		{
+			Name: "tgs_sticker",
+			Data: config.TGSSticker,
+		},
+	}
 
 }
 
@@ -2175,10 +2230,12 @@ func (config SetStickerSetThumbConfig) params() (Params, error) {
 }
 
 func (config SetStickerSetThumbConfig) files() []RequestFile {
-	return []RequestFile{{
-		Name: "thumb",
-		Data: config.Thumb,
-	}}
+	return []RequestFile{
+		{
+			Name: "thumb",
+			Data: config.Thumb,
+		},
+	}
 }
 
 // SetChatStickerSetConfig allows you to set the sticker set for a supergroup.
@@ -2480,52 +2537,66 @@ func prepareInputMediaFile(inputMedia interface{}, idx int) []RequestFile {
 	switch m := inputMedia.(type) {
 	case InputMediaPhoto:
 		if m.Media.NeedsUpload() {
-			files = append(files, RequestFile{
-				Name: fmt.Sprintf("file-%d", idx),
-				Data: m.Media,
-			})
+			files = append(
+				files, RequestFile{
+					Name: fmt.Sprintf("file-%d", idx),
+					Data: m.Media,
+				},
+			)
 		}
 	case InputMediaVideo:
 		if m.Media.NeedsUpload() {
-			files = append(files, RequestFile{
-				Name: fmt.Sprintf("file-%d", idx),
-				Data: m.Media,
-			})
+			files = append(
+				files, RequestFile{
+					Name: fmt.Sprintf("file-%d", idx),
+					Data: m.Media,
+				},
+			)
 		}
 
 		if m.Thumb != nil && m.Thumb.NeedsUpload() {
-			files = append(files, RequestFile{
-				Name: fmt.Sprintf("file-%d", idx),
-				Data: m.Thumb,
-			})
+			files = append(
+				files, RequestFile{
+					Name: fmt.Sprintf("file-%d", idx),
+					Data: m.Thumb,
+				},
+			)
 		}
 	case InputMediaDocument:
 		if m.Media.NeedsUpload() {
-			files = append(files, RequestFile{
-				Name: fmt.Sprintf("file-%d", idx),
-				Data: m.Media,
-			})
+			files = append(
+				files, RequestFile{
+					Name: fmt.Sprintf("file-%d", idx),
+					Data: m.Media,
+				},
+			)
 		}
 
 		if m.Thumb != nil && m.Thumb.NeedsUpload() {
-			files = append(files, RequestFile{
-				Name: fmt.Sprintf("file-%d", idx),
-				Data: m.Thumb,
-			})
+			files = append(
+				files, RequestFile{
+					Name: fmt.Sprintf("file-%d", idx),
+					Data: m.Thumb,
+				},
+			)
 		}
 	case InputMediaAudio:
 		if m.Media.NeedsUpload() {
-			files = append(files, RequestFile{
-				Name: fmt.Sprintf("file-%d", idx),
-				Data: m.Media,
-			})
+			files = append(
+				files, RequestFile{
+					Name: fmt.Sprintf("file-%d", idx),
+					Data: m.Media,
+				},
+			)
 		}
 
 		if m.Thumb != nil && m.Thumb.NeedsUpload() {
-			files = append(files, RequestFile{
-				Name: fmt.Sprintf("file-%d", idx),
-				Data: m.Thumb,
-			})
+			files = append(
+				files, RequestFile{
+					Name: fmt.Sprintf("file-%d", idx),
+					Data: m.Thumb,
+				},
+			)
 		}
 	}
 

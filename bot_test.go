@@ -550,7 +550,9 @@ func TestSetWebhookWithCert(t *testing.T) {
 
 	bot.Request(DeleteWebhookConfig{})
 
-	wh, err := NewWebhookWithCert("https://example.com/tgbotapi-test/"+bot.Token, FilePath("tests/cert.pem"))
+	wh, err := NewWebhookWithCert(
+		"https://example.com/tgbotapi-test/"+bot.Token, FilePath("tests/cert.pem"),
+	)
 
 	if err != nil {
 		t.Error(err)
@@ -607,11 +609,13 @@ func TestSetWebhookWithoutCert(t *testing.T) {
 func TestSendWithMediaGroupPhotoVideo(t *testing.T) {
 	bot, _ := getBot(t)
 
-	cfg := NewMediaGroup(ChatID, []interface{}{
-		NewInputMediaPhoto(FileURL("https://github.com/go-telegram-bot-api/telegram-bot-api/raw/0a3a1c8716c4cd8d26a262af9f12dcbab7f3f28c/tests/image.jpg")),
-		NewInputMediaPhoto(FilePath("tests/image.jpg")),
-		NewInputMediaVideo(FilePath("tests/video.mp4")),
-	})
+	cfg := NewMediaGroup(
+		ChatID, []interface{}{
+			NewInputMediaPhoto(FileURL("https://github.com/antelman107/telegram-bot-api/raw/0a3a1c8716c4cd8d26a262af9f12dcbab7f3f28c/tests/image.jpg")),
+			NewInputMediaPhoto(FilePath("tests/image.jpg")),
+			NewInputMediaVideo(FilePath("tests/video.mp4")),
+		},
+	)
 
 	messages, err := bot.SendMediaGroup(cfg)
 	if err != nil {
@@ -630,10 +634,12 @@ func TestSendWithMediaGroupPhotoVideo(t *testing.T) {
 func TestSendWithMediaGroupDocument(t *testing.T) {
 	bot, _ := getBot(t)
 
-	cfg := NewMediaGroup(ChatID, []interface{}{
-		NewInputMediaDocument(FileURL("https://i.imgur.com/unQLJIb.jpg")),
-		NewInputMediaDocument(FilePath("tests/image.jpg")),
-	})
+	cfg := NewMediaGroup(
+		ChatID, []interface{}{
+			NewInputMediaDocument(FileURL("https://i.imgur.com/unQLJIb.jpg")),
+			NewInputMediaDocument(FilePath("tests/image.jpg")),
+		},
+	)
 
 	messages, err := bot.SendMediaGroup(cfg)
 	if err != nil {
@@ -652,10 +658,12 @@ func TestSendWithMediaGroupDocument(t *testing.T) {
 func TestSendWithMediaGroupAudio(t *testing.T) {
 	bot, _ := getBot(t)
 
-	cfg := NewMediaGroup(ChatID, []interface{}{
-		NewInputMediaAudio(FilePath("tests/audio.mp3")),
-		NewInputMediaAudio(FilePath("tests/audio.mp3")),
-	})
+	cfg := NewMediaGroup(
+		ChatID, []interface{}{
+			NewInputMediaAudio(FilePath("tests/audio.mp3")),
+			NewInputMediaAudio(FilePath("tests/audio.mp3")),
+		},
+	)
 
 	messages, err := bot.SendMediaGroup(cfg)
 	if err != nil {
@@ -773,14 +781,16 @@ func ExampleWebhookHandler() {
 		log.Printf("[Telegram callback failed]%s", info.LastErrorMessage)
 	}
 
-	http.HandleFunc("/"+bot.Token, func(w http.ResponseWriter, r *http.Request) {
-		update, err := bot.HandleUpdate(r)
-		if err != nil {
-			log.Printf("%+v\n", err.Error())
-		} else {
-			log.Printf("%+v\n", *update)
-		}
-	})
+	http.HandleFunc(
+		"/"+bot.Token, func(w http.ResponseWriter, r *http.Request) {
+			update, err := bot.HandleUpdate(r)
+			if err != nil {
+				log.Printf("%+v\n", err.Error())
+			} else {
+				log.Printf("%+v\n", *update)
+			}
+		},
+	)
 
 	go http.ListenAndServeTLS("0.0.0.0:8443", "cert.pem", "key.pem", nil)
 }
@@ -803,7 +813,9 @@ func ExampleInlineConfig() {
 			continue
 		}
 
-		article := NewInlineQueryResultArticle(update.InlineQuery.ID, "Echo", update.InlineQuery.Query)
+		article := NewInlineQueryResultArticle(
+			update.InlineQuery.ID, "Echo", update.InlineQuery.Query,
+		)
 		article.Description = update.InlineQuery.Query
 
 		inlineConf := InlineConfig{
@@ -956,10 +968,12 @@ func TestSendDice(t *testing.T) {
 func TestCommands(t *testing.T) {
 	bot, _ := getBot(t)
 
-	setCommands := NewSetMyCommands(BotCommand{
-		Command:     "test",
-		Description: "a test command",
-	})
+	setCommands := NewSetMyCommands(
+		BotCommand{
+			Command:     "test",
+			Description: "a test command",
+		},
+	)
 
 	if _, err := bot.Request(setCommands); err != nil {
 		t.Error("Unable to set commands")
@@ -978,10 +992,12 @@ func TestCommands(t *testing.T) {
 		t.Error("Commands were incorrectly set")
 	}
 
-	setCommands = NewSetMyCommandsWithScope(NewBotCommandScopeAllPrivateChats(), BotCommand{
-		Command:     "private",
-		Description: "a private command",
-	})
+	setCommands = NewSetMyCommandsWithScope(
+		NewBotCommandScopeAllPrivateChats(), BotCommand{
+			Command:     "private",
+			Description: "a private command",
+		},
+	)
 
 	if _, err := bot.Request(setCommands); err != nil {
 		t.Error("Unable to set commands")

@@ -164,12 +164,14 @@ func (bot *BotAPI) decodeAPIResponse(responseBody io.Reader, resp *APIResponse) 
 }
 
 // UploadFiles makes a request to the API with files.
-func (bot *BotAPI) UploadFiles(endpoint string, params Params, files []RequestFile) (*APIResponse, error) {
+func (bot *BotAPI) UploadFiles(endpoint string, params Params, files []RequestFile) (
+	*APIResponse, error,
+) {
 	r, w := io.Pipe()
 	m := multipart.NewWriter(w)
 
 	// This code modified from the very helpful @HirbodBehnam
-	// https://github.com/go-telegram-bot-api/telegram-bot-api/issues/354#issuecomment-663856473
+	// https://github.com/antelman107/telegram-bot-api/issues/354#issuecomment-663856473
 	go func() {
 		defer w.Close()
 		defer m.Close()
@@ -472,24 +474,28 @@ func (bot *BotAPI) StopReceivingUpdates() {
 func (bot *BotAPI) ListenForWebhook(pattern string) UpdatesChannel {
 	ch := make(chan Update, bot.Buffer)
 
-	http.HandleFunc(pattern, func(w http.ResponseWriter, r *http.Request) {
-		update, err := bot.HandleUpdate(r)
-		if err != nil {
-			errMsg, _ := json.Marshal(map[string]string{"error": err.Error()})
-			w.WriteHeader(http.StatusBadRequest)
-			w.Header().Set("Content-Type", "application/json")
-			_, _ = w.Write(errMsg)
-			return
-		}
+	http.HandleFunc(
+		pattern, func(w http.ResponseWriter, r *http.Request) {
+			update, err := bot.HandleUpdate(r)
+			if err != nil {
+				errMsg, _ := json.Marshal(map[string]string{"error": err.Error()})
+				w.WriteHeader(http.StatusBadRequest)
+				w.Header().Set("Content-Type", "application/json")
+				_, _ = w.Write(errMsg)
+				return
+			}
 
-		ch <- *update
-	})
+			ch <- *update
+		},
+	)
 
 	return ch
 }
 
 // ListenForWebhookRespReqFormat registers a http handler for a single incoming webhook.
-func (bot *BotAPI) ListenForWebhookRespReqFormat(w http.ResponseWriter, r *http.Request) UpdatesChannel {
+func (bot *BotAPI) ListenForWebhookRespReqFormat(
+	w http.ResponseWriter, r *http.Request,
+) UpdatesChannel {
 	ch := make(chan Update, bot.Buffer)
 
 	func(w http.ResponseWriter, r *http.Request) {
@@ -707,7 +713,9 @@ func (bot *BotAPI) AnswerWebAppQuery(config AnswerWebAppQueryConfig) (SentWebApp
 }
 
 // GetMyDefaultAdministratorRights gets the current default administrator rights of the bot.
-func (bot *BotAPI) GetMyDefaultAdministratorRights(config GetMyDefaultAdministratorRightsConfig) (ChatAdministratorRights, error) {
+func (bot *BotAPI) GetMyDefaultAdministratorRights(config GetMyDefaultAdministratorRightsConfig) (
+	ChatAdministratorRights, error,
+) {
 	var rights ChatAdministratorRights
 
 	resp, err := bot.Request(config)
